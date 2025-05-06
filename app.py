@@ -4,7 +4,7 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 import numpy as np
 import os
-from io import BytesIO
+from io import BytesIO  # Make sure this is imported
 
 app = Flask(__name__)
 CORS(app)
@@ -19,8 +19,8 @@ def predict():
         if not file:
             return jsonify({"error": "No file part"}), 400
         
-        # Convert file to BytesIO object
-        img = image.load_img(BytesIO(file.read()), target_size=(224, 224))
+        # Convert the file to BytesIO object
+        img = image.load_img(BytesIO(file.read()), target_size=(224, 224))  # Correctly use BytesIO here
         img_array = image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0) / 255.0
         predictions = model.predict(img_array)[0]
