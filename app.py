@@ -24,15 +24,19 @@ def predict():
         img_array = image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0) / 255.0
         predictions = model.predict(img_array)[0]
+        
+        # Convert numpy float32 to native Python float
         predicted_class = class_names[np.argmax(predictions)]
         confidence = float(np.max(predictions))
+
+        # Prepare top 3 predictions
+        top_3 = sorted(zip(class_names, predictions), key=lambda x: x[1], reverse=True)[:3]
+        top_3 = [(name, float(value)) for name, value in top_3]  # Ensure values are floats
 
         return jsonify({
             "predicted_class": predicted_class,
             "confidence": confidence,
-            "top_3": sorted(
-                zip(class_names, predictions), key=lambda x: x[1], reverse=True
-            )[:3]
+            "top_3": top_3
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
